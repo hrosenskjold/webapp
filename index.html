@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Python Script Webapplikation</title>
+</head>
+<body>
+    <h1>Python Script Webapplikation</h1>
+    <form id="upload-form">
+        <label for="file-input">Vælg et Excel-ark:</label>
+        <input type="file" id="file-input" accept=".xlsx">
+        <button type="button" onclick="uploadFile()">Upload og kør</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        function uploadFile() {
+            const fileInput = document.getElementById('file-input');
+            const resultElement = document.getElementById('result');
+            
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                fetch('/run-script', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    resultElement.textContent = 'Svar fra Python-script: ' + data.result;
+                })
+                .catch(error => {
+                    console.error('Fejl under anmodning:', error);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
